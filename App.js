@@ -1,18 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
-import { ScrollView, TextInput } from 'react-native-web';
+import { StyleSheet, Text, View, Button, Image, ScrollView, TextInput, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
 
 export default function App() {
+  const [contador, setContador] = useState(0);
+  const [login, setLogin] = useState('');
+  const [loginFinal, setLoginFinal] = useState('');
+  const [senha, setSenha] = useState('');
+  const [senhaFinal, setSenhaFinal] = useState('');
+
+  useEffect(()=> {console.log('login digitado: ' + loginFinal + ' - senha digitada: ' + senhaFinal)},[loginFinal,senhaFinal]);
+
   return (
-    <View style={stylebtn.container}>
-      <ScrollView>
-      <Image style={{width:'150px',height:'150px', alignSelf:'center'}} source={uri='https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDJpdWgyZWhoanZsdWZsdjZlZHRlcXM3cm91Y3pjdXZ4bXZ1dnoyZiZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/FoH28ucxZFJZu/giphy.webp'}></Image>
-      <Text style={styles.text}>Bem vindo a SantaCruz</Text>
-      <Text style={styles.text}>Hoje é terça-feira</Text>
-      <TextInput secureTextEntry={true} style={{fontSize: '50px', color:'rgba(255, 34, 34, 1)'}} placeholder='Insira seu nome'></TextInput>
-      <Button color="#ffc800ff" borderColor="#fff" title="clique aqui"></Button>
+    <View style={styles.container}>
+      <Image style={styles.logo} source={{uri:'https://santacruz.br/wp-content/uploads/2024/08/logo-slogan-white.png'}}></Image>
+      <Text style={styles.text}>Login</Text>
+      <TextInput onChangeText={text=> setLogin(text)} placeholder='Insira seu login'></TextInput>
+      <Text style={styles.text}>Senha</Text>
+      <TextInput onChangeText={text=> setSenha(text)} secureTextEntry={true} placeholder='Insira sua senha'></TextInput>
+      <Button style={styles.btn} onPress={()=> {setLoginFinal(login); setSenhaFinal(senha);}} color= '#ff457d' title="Entrar"></Button>
       <StatusBar style="auto" />
-      </ScrollView>
     </View>
   );
 }
@@ -20,28 +27,22 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ff0000ff',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
-    color:'#fff',
+    color:'#000',
     fontFamily: 'Helvetica',
-    fontSize: '30px'
-  },
-  
-});
-const stylebtn = StyleSheet.create(
-  {
-    container: {
-    flex: 1,
-    backgroundColor: '#4dff00ff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    fontSize: 20,
+    margin: 5
   },
   btn: {
-    backgroundColor: '#ffb701ff',
-    borderColor: '#000000',
-    color: '#000000'
+    margin:5
+  },
+  logo:{
+    width: 250,
+    height: 150
   }
+  
 });
