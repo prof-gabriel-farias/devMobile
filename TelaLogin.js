@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, Image, ScrollView, TextInput, Alert } f
 import { useState, useEffect } from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Saudacao from './Componentes';
 
 export default function TelaLogin() {
    const navigation = useNavigation();
@@ -11,12 +12,13 @@ export default function TelaLogin() {
 
   const validarLogin = ()=> {
       if (login === 'gabriel' && senha === 'usc')
-      {navigation.navigate("Home");}
+      {navigation.navigate("Home",{varlogin:login})}
       else 
       {console.log("usuário ou senha inválidos");}
   }
   return (
   <View style={styles.container}>
+      <Saudacao nome={'gabriel'}></Saudacao>
       <Image style={styles.logo} source={{uri:'https://santacruz.br/wp-content/uploads/2024/08/logo-slogan-white.png'}}></Image>
       <Text style={styles.text}>Login</Text>
       <TextInput onChangeText={text=> setLogin(text)} placeholder='Insira seu login'></TextInput>

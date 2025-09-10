@@ -9,9 +9,6 @@ import TelaHome  from './TelaHome';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [senha, setSenha] = useState('');
-  const [senhaFinal, setSenhaFinal] = useState('');
-
   //useEffect(()=> {console.log('valor do contador ' + contador),[contador]});
   return(
     <NavigationContainer>
