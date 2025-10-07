@@ -6,13 +6,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Saudacao from './Componentes';
 
 export default function TelaLogin() {
-   const navigation = useNavigation();
+   const trocadetela = useNavigation();
   const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
 
   const validarLogin = ()=> {
       if (login === 'gabriel' && senha === 'usc')
-      {navigation.navigate("Home",{varlogin:login})}
+      {trocadetela.navigate("Home",{varlogin:login})}
       else 
       {console.log("usuário ou senha inválidos");}
   }
