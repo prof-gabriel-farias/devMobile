@@ -4,17 +4,26 @@ import { useState, useEffect } from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Saudacao from './Componentes';
+import { auth } from './firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import firebase from 'firebase/compat/app';
+import TelaHome from './TelaHome';
 
 export default function TelaLogin() {
-   const trocadetela = useNavigation();
+   const navigation = useNavigation();
   const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
 
   const validarLogin = ()=> {
-      if (login === 'gabriel' && senha === 'usc')
-      {trocadetela.navigate("Home",{varlogin:login})}
-      else 
-      {console.log("usuário ou senha inválidos");}
+    signInWithEmailAndPassword(auth, login, senha)
+      .then(userCredential => {
+        const user = userCredential.user;
+        console.log('Logado:', user.email);
+        navigation.navigate("Home");
+      })
+      .catch(error => {
+        alert('Erro no login: ' + error.message);
+      });
   }
   return (
   <View style={styles.container}>

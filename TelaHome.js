@@ -5,8 +5,8 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Saudacao from './Componentes';
 
-export default function TelaHome({route}) {
-  const {varlogin} = route.params;
+export default function TelaHome() {
+  const varlogin = '';
 
   const [endereco,setEndereco] = useState({});
   const [cep,setCEP] = useState({});
