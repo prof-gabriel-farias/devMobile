@@ -4,13 +4,28 @@ import { useState, useEffect } from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Saudacao from './Componentes';
-
+import {database} from './firebase';
+import {ref,set,onValue,get} from 'firebase/database';
+ 
 export default function TelaHome() {
   const varlogin = '';
 
   const [endereco,setEndereco] = useState({});
   const [cep,setCEP] = useState({});
   const [pessoa,setPessoa] = useState({});
+  const [carro,setCarro] = useState({});
+
+function salvarCarro() {
+  set(ref(database,'carros/001'),{
+    carro:carro
+  });
+  console.log('criei o carro ->' + carro);
+  //const data = snapshot.val();
+  //if (data)
+  //{
+    //console.log('criei o carro ->' + data);
+  //}
+}
 
   useEffect(()=> {
       //localizarCEP();
@@ -51,6 +66,10 @@ export default function TelaHome() {
 
       </FlatList>
       <Saudacao nome={varlogin}></Saudacao>
+
+    <Text>Digite o nome do Carro:</Text>
+    <TextInput onChangeText={setCarro}></TextInput>
+    <Button title="Inserir Carro" onPress={salvarCarro}></Button>
     </View>
   );
 }

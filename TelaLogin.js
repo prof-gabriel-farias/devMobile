@@ -5,7 +5,7 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Saudacao from './Componentes';
 import { auth } from './firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
 import TelaHome from './TelaHome';
 
@@ -15,10 +15,11 @@ export default function TelaLogin() {
   const [senha, setSenha] = useState('');
 
   const validarLogin = ()=> {
-    signInWithEmailAndPassword(auth, login, senha)
+    /*signInWithEmailAndPassword(auth, login, senha)*/
+    signInWithEmailAndPassword(auth,login,senha)
       .then(userCredential => {
         const user = userCredential.user;
-        console.log('Logado:', user.email);
+        console.log('Usuário criado:', user.email);
         navigation.navigate("Home");
       })
       .catch(error => {
