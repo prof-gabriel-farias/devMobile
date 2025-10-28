@@ -14,9 +14,11 @@ export default function TelaHome() {
   const [cep,setCEP] = useState({});
   const [pessoa,setPessoa] = useState({});
   const [carro,setCarro] = useState({});
+  const [idCarro,setIDCarro] = useState('');
+  const [carrosLista,setCarros] = useState({});
 
 function salvarCarro() {
-  set(ref(database,'carros/001'),{
+  set(ref(database,`carros/${idCarro}`),{
     carro:carro
   });
   console.log('criei o carro ->' + carro);
@@ -29,6 +31,26 @@ function salvarCarro() {
 
   useEffect(()=> {
       //localizarCEP();
+      const carrosLista = ref(database,'carros');
+
+      const unsubscribe = onValue(carrosLista, (snapshot)=> {
+        const data = snapshot.val();
+
+      if (data){
+        const todosCarros = Object.keys(data).map((key) => ({
+          id: key,
+          nome: data[key].carro           
+        }));
+
+        setCarros(todosCarros);
+      }
+      else {
+        setCarros([]);
+      }
+      })
+
+      return () => unsubscribe();
+
   },[]);
 
   function buscarPessoas(){
@@ -61,15 +83,23 @@ function salvarCarro() {
       <Button onPress={()=> buscarPessoas()} title='Buscar Pessoas'></Button>
       <FlatList data={pessoa} renderItem={({item}) => 
        (<Text>Nome da Pessoa: {item.name} </Text>)
-
       }>
-
       </FlatList>
-      <Saudacao nome={varlogin}></Saudacao>
 
+    <Text>Digite o Identificador do Carro:</Text>
+    <TextInput onChangeText={setIDCarro}></TextInput> 
     <Text>Digite o nome do Carro:</Text>
     <TextInput onChangeText={setCarro}></TextInput>
     <Button title="Inserir Carro" onPress={salvarCarro}></Button>
+    <FlatList
+      data={carrosLista}
+      renderItem={({item}) => (
+        <Text>
+          ID:{item.id} - NomeCarro: {item.nome}
+        </Text>
+      )}    
+      ListEmptyComponent={<Text>Nenhum carro encontrado.</Text>}>
+    </FlatList>
     </View>
   );
 }
