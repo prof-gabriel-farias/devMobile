@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Image, ScrollView, TextInput, Alert, FlatList } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, Button, Image, ScrollView, TextInput, Alert, FlatList, ActivityIndicatorBase } from 'react-native';
 import { useState, useEffect } from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Saudacao from './Componentes';
 import {database} from './firebase';
 import {ref,set,onValue,get} from 'firebase/database';
+import MapView, {Marker} from 'react-native-maps';
+import * as Location from 'expo-location';
  
 export default function TelaHome() {
   const varlogin = '';
@@ -16,6 +18,8 @@ export default function TelaHome() {
   const [carro,setCarro] = useState({});
   const [idCarro,setIDCarro] = useState('');
   const [carrosLista,setCarros] = useState({});
+  const [location,setLocation] = useState(null);
+  const [errors,setErrors] = useState(null);
 
 function salvarCarro() {
   set(ref(database,`carros/${idCarro}`),{
@@ -28,6 +32,23 @@ function salvarCarro() {
     //console.log('criei o carro ->' + data);
   //}
 }
+
+useEffect(() => {
+  (async ()=> {
+    let {status} = await Location.requestForegroundPermissionsAsync();
+    console.log(status);
+    if (status === 'granted'){
+      let location = await Location.getCurrentPositionAsync({});
+        setLocation(location.coords);
+    
+    }
+    else{
+      setErrors('Permissão negada, pois o usuário não aceitou');
+      Alert.alert('Permissão negada, favor aceitar a localização');
+    }
+  })();
+},[])
+
 
   useEffect(()=> {
       //localizarCEP();
@@ -91,6 +112,27 @@ function salvarCarro() {
     <Text>Digite o nome do Carro:</Text>
     <TextInput onChangeText={setCarro}></TextInput>
     <Button title="Inserir Carro" onPress={salvarCarro}></Button>
+    {!location ? (
+      <ActivityIndicator size="large"/>
+    ):(
+    <MapView 
+     style={styles.mapa}
+     initialRegion={{
+      latitude: location.latitude,
+      longitude: location.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01
+     }} >
+      <Marker
+        coordinate={{
+          latitude: location.latitude,
+          longitude: location.longitude
+        }}
+        title='Aqui é sua posição'
+      ></Marker>
+    </MapView>
+    )}
+
     <FlatList
       data={carrosLista}
       renderItem={({item}) => (
@@ -100,6 +142,14 @@ function salvarCarro() {
       )}    
       ListEmptyComponent={<Text>Nenhum carro encontrado.</Text>}>
     </FlatList>
+    
     </View>
   );
 }
+const styles = StyleSheet.create({
+  mapa:{
+    width: 400,
+    height: 400,
+    marginTop: 10
+  }
+});
