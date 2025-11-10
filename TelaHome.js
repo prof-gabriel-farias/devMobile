@@ -9,6 +9,7 @@ import {ref,set,onValue,get} from 'firebase/database';
 import MapView, {Marker} from 'react-native-maps';
 import * as Location from 'expo-location';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import * as MediaLibrary from 'expo-media-library';
  
 export default function TelaHome() {
   const varlogin = '';
@@ -27,6 +28,7 @@ export default function TelaHome() {
   const [permission, requestPermission] = useCameraPermissions();
   const [foto, setFoto] = useState(null);
   const cameraRef = useRef(null);
+  const [storagePermission, reqStoragePermission] = MediaLibrary.usePermissions()
 
 function salvarCarro() {
   set(ref(database,`carros/${idCarro}`),{
@@ -40,12 +42,17 @@ function salvarCarro() {
   //}
 }
 
- 
+  useEffect(() => {
+    if (!storagePermission?.granted) {
+      reqStoragePermission();
+    }
+  }, []);
+  
 
 useEffect(() => {
   (async ()=> {
     let {status} = await Location.requestForegroundPermissionsAsync();
-    console.log(status);
+   
     if (status === 'granted'){
       let location = await Location.getCurrentPositionAsync({});
         setLocation(location.coords);
@@ -106,6 +113,23 @@ const tirarFoto = async() =>{
   }
 }
 
+const salvarNaGaleria = async() =>{
+  try{
+    if (storagePermission.status === 'granted')
+    {
+      const img = await MediaLibrary.createAssetAsync(foto);
+      Alert.alert("Foto armazenada com sucesso.");
+    }
+    else
+    {
+      Alert.alert("É necessário autorizar para salvar na biblioteca.");
+    }
+  }
+  catch(error){
+    Alert.alert("Sua foto não pode ser salva. " + error);
+  }
+}
+
 if (!permission) {
     // Camera permissions are still loading.
     return <View />;
@@ -134,6 +158,7 @@ if (!permission.granted) {
         </>
       )
       }
+      <Button onPress={() => salvarNaGaleria()} title='Salvar Foto'></Button>
 
       <TextInput placeholder='DIGITE O CEP' onChangeText={text=> setCEP(text)}></TextInput>
       <Button onPress={()=> localizarCEP()} title='Consultar CEP'></Button>
