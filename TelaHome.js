@@ -113,17 +113,28 @@ const tirarFoto = async() =>{
   }
 }
 
+ const requestMediaLibraryPermission = async () => {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Sorry, we need media library permissions to make this work!');
+            return false;
+        }
+        return true;
+    };
+
 const salvarNaGaleria = async() =>{
   try{
-    if (storagePermission.status === 'granted')
-    {
+    //if (storagePermission.status === 'granted')
+    //{
+     if (await requestMediaLibraryPermission()) {
       const img = await MediaLibrary.createAssetAsync(foto);
       Alert.alert("Foto armazenada com sucesso.");
-    }
-    else
-    {
-      Alert.alert("É necessário autorizar para salvar na biblioteca.");
-    }
+     }
+    //}
+    //else
+    //{
+    //  Alert.alert("É necessário autorizar para salvar na biblioteca.");
+    //}
   }
   catch(error){
     Alert.alert("Sua foto não pode ser salva. " + error);
